@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "joke-api"
+version = "0.1.0"
+description = "To develop a single API that returns one tech joke, the recommended tech stack includes Python as the programming language due to its simplicity and extensive library support. FastAPI is chosen for the API framework for its performance benefits, ease of use for creating RESTful APIs, and built-in support for data validation and serialization. PostgreSQL will serve as the database, renowned for its reliability, capability to handle complex queries, scalability, and strong community support. Prisma is the preferred ORM for this project, considering its modern approach to database management, type safety features, and straightforward syntax which aligns well with Python and FastAPI. This setup will efficiently handle the delivery of tech jokes, ensuring a robust, scalable, and maintainable architecture. The API will return a single tech joke, catering specifically to users with a preference for tech-focused humor, thereby making the content both educational and entertaining for a tech-savvy audience."
+authors = ["AutoGPT <info@agpt.co>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+fastapi = "^0.82.0"
+prisma = "*"
+pydantic = "*"
+uvicorn = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

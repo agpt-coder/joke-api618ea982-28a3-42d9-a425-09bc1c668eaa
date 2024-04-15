@@ -1,0 +1,77 @@
+// datasource db defines the database connection settings.
+// It is configured for PostgreSQL and uses an environment variable for the connection URL.
+// The 'extensions' feature enables the use of PostgreSQL-specific data types.
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+}
+
+// generator db configures Prisma Client settings.
+// It is set up to use Prisma Client Python with asyncio interface and specific features.
+generator db {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+  previewFeatures      = ["postgresqlExtensions"]
+}
+
+model Joke {
+  id          String        @id @default(dbgenerated("gen_random_uuid()"))
+  content     String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deleted     Boolean       @default(false)
+  feedback    Feedback[]
+  JokeHistory JokeHistory[]
+}
+
+model User {
+  id                      String                    @id @default(dbgenerated("gen_random_uuid()"))
+  email                   String                    @unique
+  password                String
+  role                    Role
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  feedback                Feedback[]
+  ContentManagementAccess ContentManagementAccess[]
+}
+
+model Feedback {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  jokeId    String
+  userId    String
+  joke      Joke     @relation(fields: [jokeId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RateLimit {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  ipAddress String
+  requests  Int
+  resetAt   DateTime
+}
+
+model ContentManagementAccess {
+  id          String @id @default(dbgenerated("gen_random_uuid()"))
+  userId      String
+  permissions String
+  user        User   @relation(fields: [userId], references: [id])
+}
+
+model JokeHistory {
+  id       String   @id @default(dbgenerated("gen_random_uuid()"))
+  jokeId   String
+  servedAt DateTime @default(now())
+  joke     Joke     @relation(fields: [jokeId], references: [id], onDelete: Cascade)
+  // This model tracks when and which jokes are served to prevent repetition
+}
+
+enum Role {
+  STUDENT // Placeholder role, not directly used in this specific project but included for potential future use cases.
+  TUTOR // Placeholder role, not directly used in this specific project but included for potential future use cases.
+  ADMIN
+}
+
